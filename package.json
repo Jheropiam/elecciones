@@ -1,0 +1,1 @@
+{ "private": true, "scripts": { "build": "echo Frontend base listo", "dev": "echo Frontend base listo" }, "devDependencies": {} }
