@@ -12,7 +12,7 @@
         $seguimientoFilterDefinitions[] = ['key' => 'local', 'label' => 'Local', 'placeholder' => 'Local', 'items' => $locales, 'value' => 'id_local', 'text' => 'nombre'];
     }
     if (!empty($filters['local'])) {
-        $seguimientoEstados = collect($estadosSeguimiento)->map(fn($label, $key) => (object)['clave' => $key, 'nombre' => $label])->values();
+        $seguimientoEstados = collect($estadosSeguimiento)->reject(fn($label, $key) => $key === 'TODAS')->map(fn($label, $key) => (object)['clave' => $key, 'nombre' => $label])->values();
         $seguimientoFilterDefinitions[] = ['key' => 'estado', 'label' => 'Estado', 'placeholder' => 'Estado', 'items' => $seguimientoEstados, 'value' => 'clave', 'text' => 'nombre'];
     }
 @endphp
@@ -41,7 +41,7 @@
                             <button type="button" class="reporte-cascade-option" data-value="{{ $item->{$field['value']} }}" data-label="{{ $item->{$field['text']} }}">{{ $item->{$field['text']} }}</button>
                         @endforeach
                     </div>
-                    @if($field['key'] !== 'region')
+                    @if(!in_array($field['key'], ['region', 'estado'], true))
                         <button type="button" class="reporte-cascade-option reporte-cascade-clear" data-value="" data-label="{{ $field['placeholder'] }}">{{ $field['placeholder'] }}</button>
                     @endif
                 </div>

@@ -89,7 +89,13 @@
                     $access = \App\Support\AccessControl::menuAccess();
                     if ($access['modules'] !== null) {
                         $menuModules = array_values(array_filter($menuModules, function ($m) use ($access) {
-                            return in_array(mb_strtolower($m['name'], 'UTF-8'), $access['modules'], true);
+                            // El nombre visible del módulo puede diferir del nombre del catálogo de permisos.
+                            // Mantener un alias canónico evita ocultar Digitación de Actas a los roles autorizados.
+                            $permissionModuleName = match ($m['slug']) {
+                                'digitar-acta' => 'Digitar Acta',
+                                default => $m['name'],
+                            };
+                            return in_array(mb_strtolower($permissionModuleName, 'UTF-8'), $access['modules'], true);
                         }));
                     }
                 @endphp

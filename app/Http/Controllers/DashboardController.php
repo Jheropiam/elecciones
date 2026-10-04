@@ -41,7 +41,15 @@ class DashboardController extends Controller
 
         $modules = self::sidebarModules();
         if (!\App\Support\AccessControl::isAdmin($id)) {
-            $modules = array_values(array_filter($modules, fn($m) => \App\Support\AccessControl::canModule($m['name'], $id)));
+            $modules = array_values(array_filter($modules, function ($m) use ($id) {
+                // El título mostrado en el menú es "Digitación de Actas", pero el catálogo
+                // de permisos registra el módulo como "Digitar Acta".
+                $permissionModuleName = match ($m['slug']) {
+                    'digitar-acta' => 'Digitar Acta',
+                    default => $m['name'],
+                };
+                return \App\Support\AccessControl::canModule($permissionModuleName, $id);
+            }));
         }
         $config = SystemConfig::all();
 
